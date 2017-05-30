@@ -43,15 +43,33 @@ class Polynomial:
 
     # Polynomial subtraction: newPoly = self - rhsPoly.
     def __sub__(self, rhsPoly):
-        newPoly = self - rhsPoly
+        newPoly = Polynomial()
+        if self.degree() > rhsPoly.degree():
+            maxDegree = self.degree()
+        else:
+            maxDegree = rhsPoly.degree()
+        i = maxDegree
+        while i >= 0:
+            value = self[i] - rhsPoly[i]
+            newPoly._appendTerm(i, value)
+            i -= 1
         return newPoly
 
     # Polynomial multiplication: newPoly = self * rhsPoly.
     def __mul__(self, rhsPoly):
-        newPoly = self * rhsPoly
+        newPoly = Polynomial()
+        if self.degree() > rhsPoly.degree():
+            maxDegree = self.degree()
+        else:
+            maxDegree = rhsPoly.degree()
+        i = maxDegree
+        while i >= 0:
+            value = self[i] - rhsPoly[i]
+            newPoly._appendTerm(i, value)
+            i -= 1
         return newPoly
 
-    def simple_add(self, rhsPoly):
+    def __add__(self, rhsPoly):
         newPoly = Polynomial()
         if self.degree() > rhsPoly.degree():
             maxDegree = self.degree()
@@ -65,6 +83,21 @@ class Polynomial:
             i -= 1
         return newPoly
 
+    def __str__(self):
+        jack = ''
+        pol = self._polyHead
+        while pol != None:
+            if pol.coefficient == int(pol.coefficient):
+                pol.coefficient = int(pol.coefficient)
+            jack += str(pol.coefficient) + 'X^' + str(pol.degree)
+            pol = pol.next
+            if pol != None:
+                if pol.coefficient >= 0:
+                    jack += ' + '
+                else:
+                    jack += ' - '
+        return jack
+
     # Helper method for appending terms to the polynomial.
     def _appendTerm(self, degree, coefficient):
         if coefficient != 0.0:
@@ -74,7 +107,7 @@ class Polynomial:
             else:
                 self._polyHead.next = newTerm
             self._polyTail = newTerm
-
+'''
     def __add__(self, rhsPoly):
         assert self.degree() >= 0 and rhsPoly.degree() >= 0, "Addition only allowed on non -empty polynomials."
         newPoly = Polynomial()
@@ -108,16 +141,9 @@ class Polynomial:
             newPoly._appendTerm(nodeB.degree, nodeB.coefficient)
             nodeB = nodeB.next
 
-        return newPoly
+        return newPoly'''
 
-    def __str__(self):
-        jack = ''
-        pol = self._polyHead
-        for i in range(self.degree()):
-            jack += pol
-            pol = pol.next
-        return jack
-        pass
+
 
 # Class for creating polynomial term nodes used with the linked list.
 class _PolyTermNode(object):
@@ -131,6 +157,12 @@ if __name__ == "__main__":
     a = Polynomial(2, 4)
     b = Polynomial(1, 3)
     print(a.degree())
-    a._appendTerm(0, 4)
-    a = a.simple_add(b)
-    print(a.evaluate(1))
+    #a._appendTerm(0, 4)
+    q = a.simple_add(b)
+    c = Polynomial(0, 5)
+    w = a.simple_add(c)
+    print(w._polyHead.degree)
+    print(w[2], w[1], w[0])
+    print(w.evaluate(1))
+    print(w)
+    print(q)
