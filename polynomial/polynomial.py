@@ -117,7 +117,7 @@ class Polynomial:
             if self._polyHead is None:
                 self._polyHead = newTerm
             else:
-                self._polyHead.next = newTerm
+                self._polyTail.next = newTerm
             self._polyTail = newTerm
 '''
     def __add__(self, rhsPoly):
@@ -174,7 +174,6 @@ if __name__ == "__main__":
     q = a + b
     print(q)
     w = q + c
-    w = w + q
     print(w[2], w[1], w[0])
     #print(w.evaluate(1))
     print(w)
