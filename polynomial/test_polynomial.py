@@ -23,6 +23,6 @@ print(poly2)
 print(poly1.degree())
 print(poly2.degree())
 
-print('qq', poly1 + poly2)
+print(poly1 + poly2)
 print(poly1 - poly2)
 print(poly1 * poly2)

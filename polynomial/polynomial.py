@@ -64,8 +64,12 @@ class Polynomial:
             maxDegree = rhsPoly.degree()
         i = maxDegree
         while i >= 0:
-            value = self[i] - rhsPoly[i]
-            newPoly._appendTerm(i, value)
+            j = maxDegree
+            while j >= 0:
+                value = self[i] * rhsPoly[j]
+                degr = i + j
+                newPoly._appendTerm(degr, value)
+                j -= 1
             i -= 1
         return newPoly
 
@@ -82,6 +86,14 @@ class Polynomial:
             newPoly._appendTerm(i, value)
             i -= 1
         return newPoly
+
+    def __len__(self):
+        l = 0
+        pol = self._polyHead
+        while pol != None:
+            l += 1
+            pol = pol.next
+        return l
 
     def __str__(self):
         jack = ''
@@ -156,13 +168,14 @@ class _PolyTermNode(object):
 if __name__ == "__main__":
     a = Polynomial(2, 4)
     b = Polynomial(1, 3)
-    print(a.degree())
-    #a._appendTerm(0, 4)
-    q = a.simple_add(b)
     c = Polynomial(0, 5)
-    w = a.simple_add(c)
-    print(w._polyHead.degree)
-    print(w[2], w[1], w[0])
-    print(w.evaluate(1))
-    print(w)
+    #print(a.degree())
+    #a._appendTerm(0, 4)
+    q = a + b
     print(q)
+    w = q + c
+    w = w + q
+    print(w[2], w[1], w[0])
+    #print(w.evaluate(1))
+    print(w)
+
