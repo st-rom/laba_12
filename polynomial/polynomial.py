@@ -21,13 +21,11 @@ class Polynomial:
     def __getitem__(self, degree):
         assert self.degree() >= 0, "Operation not permitted on an empty polynomial."
         curNode = self._polyHead
-        while curNode is not None and curNode.degree >= degree:
+        while curNode is not None:
+            if curNode.degree == degree:
+                return curNode.coefficient
             curNode = curNode.next
-
-        if curNode is None or curNode.degree != degree:
-            return 0.0
-        else:
-            return curNode.coefficient
+        return 0.0
 
     # Evaluate the polynomial at the given scalar value.
     def evaluate(self, scalar):
@@ -64,7 +62,7 @@ class Polynomial:
         while i >= 0:
             value = self[i] + rhsPoly[i]
             newPoly._appendTerm(i, value)
-            i += 1
+            i -= 1
         return newPoly
 
     # Helper method for appending terms to the polynomial.
@@ -73,8 +71,8 @@ class Polynomial:
             newTerm = _PolyTermNode(degree, coefficient)
             if self._polyHead is None:
                 self._polyHead = newTerm
-            else :
-                self._polyTail.next = newTerm
+            else:
+                self._polyHead.next = newTerm
             self._polyTail = newTerm
 
     def __add__(self, rhsPoly):
@@ -112,23 +110,14 @@ class Polynomial:
 
         return newPoly
 
-    def __len__(self):
-        if self._polyHead is None:
-            return 0
-        length = 0
-        i = self._polyHead
-        while i is not None:
-            length += 1
-            i = i.next
-
     def __str__(self):
         jack = ''
         pol = self._polyHead
-        for i in range(int(self._polyHead.degree)):
+        for i in range(self.degree()):
             jack += pol
             pol = pol.next
         return jack
-
+        pass
 
 # Class for creating polynomial term nodes used with the linked list.
 class _PolyTermNode(object):
@@ -136,3 +125,12 @@ class _PolyTermNode(object):
         self.degree = degree
         self.coefficient = coefficient
         self.next = None
+
+
+if __name__ == "__main__":
+    a = Polynomial(2, 4)
+    b = Polynomial(1, 3)
+    print(a.degree())
+    a._appendTerm(0, 4)
+    a = a.simple_add(b)
+    print(a.evaluate(1))
