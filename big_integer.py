@@ -72,7 +72,7 @@ class BigInteger:
                 elif rhsInt._tail is None:
                     helper = rhsInt._tail.data + ost
                 else:
-                    helper = int(self._tail.data) + int(rhsInt._tail.data) + ost
+                    helper = int(self._tail.data) - int(rhsInt._tail.data) + ost
                 ost = 0
                 if helper >= 10:
                     ost = int(str(helper)[:-1])
