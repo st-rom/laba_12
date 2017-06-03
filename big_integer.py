@@ -53,19 +53,29 @@ class BigInteger:
         if oper == '+':
             ost = 0
             suma = ''
-            while self._tail is not None or rhsInt._tail is not None:
-                if self._tail is None:
-                    helper = self._tail.data + ost
-                elif rhsInt._tail is None:
-                    helper = rhsInt._tail.data + ost
+            while self._tail.previous is not None or rhsInt._tail.previous is not None:
+                if self._tail.previous is None and suma != '':
+                    rhsInt._tail = rhsInt._tail.previous
+                    helper = int(rhsInt._tail.data) + ost
+                elif rhsInt._tail.previous is None and suma != '':
+                    self._tail = self._tail.previous
+                    helper = int(self._tail.data) + ost
                 else:
+                    if suma != '':
+                        self._tail = self._tail.previous
+                        rhsInt._tail = rhsInt._tail.previous
                     helper = int(self._tail.data) + int(rhsInt._tail.data) + ost
                 ost = 0
-                if helper >= 10:
+                if helper >= 10 and self._tail.previous is None and rhsInt._tail.previous is None:
                     ost = int(str(helper)[:-1])
-                suma += str(abs(helper - (ost * 10)))
-                self._tail = self._tail.previous
-                rhsInt._tail = rhsInt._tail.previous
+                    suma += str(abs(helper - (ost * 10)))
+                    suma += str(abs(ost * 10))
+                elif helper >= 10:
+                    ost = int(str(helper)[:-1])
+                    suma += str(abs(helper - (ost * 10)))
+                else:
+                    suma += str(abs(helper - (ost * 10)))
+                #print(suma, helper, ost, self._tail.data, rhsInt._tail.data)
             return BigInteger(int(suma[::-1]))
         elif oper == '-':
             totake = 0
@@ -85,7 +95,7 @@ class BigInteger:
                     if int(one._tail.data) - int(two._tail.data) - totake < 0 and one._tail.previous is not None:
                         ost += 10
                     helper = int(one._tail.data) - int(two._tail.data) + ost - totake
-                    print('uu', helper, int(one._tail.data), int(two._tail.data), ost, totake)
+                    #print('uu', helper, int(one._tail.data), int(two._tail.data), ost, totake)
                 if helper < 0:
                     if vid is True:
                         vid = False
@@ -101,6 +111,56 @@ class BigInteger:
                 return BigInteger(int('-' + suma[::-1]))
             else:
                 return BigInteger(int(suma[::-1]))
+        elif oper == '*':
+            ost = 0
+            suma = ''
+            dob = []
+            abu = self._tail
+            self.t = self._tail
+            for i in range(len(rhsInt)):
+                for j in range(len(self)):
+                    if self.t is None and rhsInt._tail is None:
+                        break
+                    if self.t is None:
+                        helper = int(rhsInt._tail.data) + ost
+                    elif rhsInt._tail is None:
+                        helper = int(self.t.data) + ost
+                    else:
+                        helper = (int(self.t.data) * int(rhsInt._tail.data)) + ost
+                    #print('tt', helper, self._tail.data)
+                    if helper >= 10 and self.t.previous is None:
+                        #print('1')
+                        ost = int(helper / 10)
+                        suma += str(abs(helper - (ost * 10)))
+                        suma += str(abs(ost * 10))
+                    elif helper >= 10 and self.t.previous is not None:
+                        #print('2')
+                        ost = int(helper/10)
+                        suma += str(abs(helper - (ost * 10)))
+                    else:
+                        #print('3')
+                        suma += str(abs(helper))
+                    #print('ss', suma)
+                    self.t = self.t.previous
+                dob.append(suma[::-1] + ('0' * i))
+                suma = ''
+                ost = 0
+                rhsInt._tail = rhsInt._tail.previous
+                self.t = abu
+            #print('d', dob)
+            numb = BigInteger(int(dob[0]))
+            for i in dob[1:]:
+                ar = BigInteger(int(i))
+                #print('a', ar, numb)
+                numb = numb.arithmetic(ar, '+')
+                #print('b', ar, numb)
+            return numb
+        elif oper == '**':
+            numb = self
+            for i in range(int(rhsInt.toString()) - 1):
+                print('n', numb)
+                numb = numb.arithmetic(self, '*')
+            return numb
 
     def bitwise_ops(self, rhsInt, oper):
         fir = BigInteger(bin(int(self.toString()))[2:])
@@ -196,9 +256,10 @@ class BigInteger:
         return string
 
 if __name__ == "__main__":
-    a = BigInteger(154)
+    a = BigInteger(85)
     print(a)
-    b = BigInteger(212)
+    b = BigInteger(8)
+    print(b)
     print(a.comparable(b))
     print(str(a.bitwise_ops(b, '^')))
-    print(a.arithmetic(b, '-'))
+    print(a.arithmetic(b, '**'))
