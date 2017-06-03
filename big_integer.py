@@ -117,6 +117,7 @@ class BigInteger:
             dob = []
             abu = self._tail
             self.t = self._tail
+            print(self, rhsInt)
             for i in range(len(rhsInt)):
                 for j in range(len(self)):
                     if self.t is None and rhsInt._tail is None:
@@ -127,7 +128,7 @@ class BigInteger:
                         helper = int(self.t.data) + ost
                     else:
                         helper = (int(self.t.data) * int(rhsInt._tail.data)) + ost
-                    #print('tt', helper, self._tail.data)
+                    print('tt', helper, abu.data, ost)
                     if helper >= 10 and self.t.previous is None:
                         #print('1')
                         ost = int(helper / 10)
@@ -139,13 +140,15 @@ class BigInteger:
                         suma += str(abs(helper - (ost * 10)))
                     else:
                         #print('3')
+                        ost = int(helper / 10)
                         suma += str(abs(helper))
-                    #print('ss', suma)
+                    print('ss', suma)
                     self.t = self.t.previous
                 dob.append(suma[::-1] + ('0' * i))
                 suma = ''
                 ost = 0
-                rhsInt._tail = rhsInt._tail.previous
+                if rhsInt._tail is not None:
+                    rhsInt._tail = rhsInt._tail.previous
                 self.t = abu
             #print('d', dob)
             numb = BigInteger(int(dob[0]))
@@ -157,9 +160,13 @@ class BigInteger:
             return numb
         elif oper == '**':
             numb = self
+            bro = BigInteger(int(self.toString()))
             for i in range(int(rhsInt.toString()) - 1):
+                bro._tail = bro._head
+                while bro._tail.next != None:
+                    bro._tail = bro._tail.next
                 print('n', numb)
-                numb = numb.arithmetic(self, '*')
+                numb = numb.arithmetic(bro, '*')
             return numb
 
     def bitwise_ops(self, rhsInt, oper):
@@ -258,7 +265,7 @@ class BigInteger:
 if __name__ == "__main__":
     a = BigInteger(85)
     print(a)
-    b = BigInteger(8)
+    b = BigInteger(4)
     print(b)
     print(a.comparable(b))
     print(str(a.bitwise_ops(b, '^')))
