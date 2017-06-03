@@ -30,18 +30,22 @@ class BigInteger:
         checker1 = self._head
         checker2 = other._head
         if len(self) > len(other):
-            return str(self) + ' > ' + str(other)
+            #print(str(self) + ' > ' + str(other))
+            return '>'
         elif len(self) < len(other):
-            return str(self) + ' < ' + str(other)
+            #print(str(self) + ' < ' + str(other))
+            return '<'
         else:
             while checker1.data != checker2.data or checker1 is not None:
-                print(checker1.data)
                 if int(checker1.data) > int(checker2.data):
-                    return str(self) + ' > ' + str(other)
+                    #print(str(self) + ' > ' + str(other))
+                    return '>'
                 elif int(checker1.data) < int(checker2.data):
-                    return str(self) + ' < ' + str(other)
+                    #print(str(self) + ' < ' + str(other))
+                    return '<'
                 elif checker1.data == checker2.data and checker1.next is None:
-                    return str(self) + ' = ' + str(other)
+                    #print(str(self) + ' = ' + str(other))
+                    return '='
                 checker1 = checker1.next
                 checker2 = checker2.next
 
@@ -64,22 +68,39 @@ class BigInteger:
                 rhsInt._tail = rhsInt._tail.previous
             return BigInteger(int(suma[::-1]))
         elif oper == '-':
+            totake = 0
             ost = 0
+            vid = False
+            one = self
+            two = rhsInt
+            if self.comparable(rhsInt) == '<':
+                vid = True
+                two = self
+                one = rhsInt
             suma = ''
-            while self._tail is not None or rhsInt._tail is not None:
-                if self._tail is None:
-                    helper = self._tail.data + ost
-                elif rhsInt._tail is None:
-                    helper = rhsInt._tail.data + ost
+            while one._tail is not None or two._tail is not None:
+                if two._tail is None:
+                    helper = int(one._tail.data) + ost
                 else:
-                    helper = int(self._tail.data) - int(rhsInt._tail.data) + ost
+                    if int(one._tail.data) - int(two._tail.data) - totake < 0 and one._tail.previous is not None:
+                        ost += 10
+                    helper = int(one._tail.data) - int(two._tail.data) + ost - totake
+                    print('uu', helper, int(one._tail.data), int(two._tail.data), ost, totake)
+                if helper < 0:
+                    if vid is True:
+                        vid = False
+                    elif vid is False:
+                        vid = True
+                totake = int(ost / 10)
                 ost = 0
-                if helper >= 10:
-                    ost = int(str(helper)[:-1])
-                suma += str(abs(helper - (ost * 10)))
-                self._tail = self._tail.previous
-                rhsInt._tail = rhsInt._tail.previous
-            return BigInteger(int(suma[::-1]))
+                suma += str(abs(helper))
+                one._tail = one._tail.previous
+                if two._tail is not None:
+                    two._tail = two._tail.previous
+            if vid is True:
+                return BigInteger(int('-' + suma[::-1]))
+            else:
+                return BigInteger(int(suma[::-1]))
 
     def bitwise_ops(self, rhsInt, oper):
         fir = BigInteger(bin(int(self.toString()))[2:])
@@ -175,9 +196,9 @@ class BigInteger:
         return string
 
 if __name__ == "__main__":
-    a = BigInteger(22)
+    a = BigInteger(154)
     print(a)
-    b = BigInteger(52)
+    b = BigInteger(212)
     print(a.comparable(b))
     print(str(a.bitwise_ops(b, '^')))
-    print(a.arithmetic(b, '+'))
+    print(a.arithmetic(b, '-'))
